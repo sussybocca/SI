@@ -1,4 +1,4 @@
-name: Build and Deploy to HuggingFace
+name: Build SI Engine
 
 on:
   push:
@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-22.04  # Use older Ubuntu for better compatibility
+  build:
+    runs-on: ubuntu-22.04
     
     steps:
     - name: Checkout code
@@ -32,15 +32,9 @@ jobs:
         cd hf_model
         python setup.py build_ext --inplace
         ls -la si_engine*.so
-        # Copy to root for artifact
-        cp si_engine*.so ../
-        cp app.py ../
-        cp requirements.txt ../
-        cp README.md ../
     
-    - name: Deploy to HuggingFace Space
-      uses: huggingface/hub@main
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
       with:
-        token: ${{ secrets.HF_TOKEN }}
-        repo: YOUR-HF-USERNAME/si-engine
-        path: .
+        name: si-engine-linux
+        path: hf_model/si_engine*.so
