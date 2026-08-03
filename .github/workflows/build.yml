@@ -1,0 +1,43 @@
+name: Build and Deploy SI Engine
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+    
+    - name: Install build dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y g++ libcurl4-openssl-dev
+    
+    - name: Install Python packages
+      run: |
+        pip install pybind11 setuptools wheel
+    
+    - name: Build SI Engine module
+      run: |
+        python setup.py build_ext --inplace
+        ls -la si_engine*.so
+    
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: si-engine-linux
+        path: |
+          si_engine*.so
+          app.py
+          requirements.txt
+          README.md
