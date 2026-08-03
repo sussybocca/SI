@@ -1,0 +1,25 @@
+name: Deploy to HuggingFace
+
+on:
+  workflow_run:
+    workflows: ["Build and Deploy SI Engine"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    
+    steps:
+    - name: Download artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: si-engine-linux
+    
+    - name: Deploy to HuggingFace Space
+      uses: huggingface/hub@main
+      with:
+        token: ${{ secrets.HF_TOKEN }}
+        repo: your-username/si-engine
+        path: .
