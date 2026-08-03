@@ -1,7 +1,7 @@
 # setup.py
+import sys
 from setuptools import setup, Extension
 from pybind11.setup_helpers import Pybind11Extension, build_ext
-import sys
 
 ext_modules = [
     Pybind11Extension(
@@ -15,7 +15,15 @@ ext_modules = [
         ],
         include_dirs=["."],
         libraries=["curl"],
-        extra_compile_args=["-std=c++17", "-O3"],
+        extra_compile_args=[
+            "-std=c++17", "-O3",
+            "-static-libstdc++",  # THIS IS THE FIX
+            "-static-libgcc"
+        ],
+        extra_link_args=[
+            "-static-libstdc++",  # THIS IS THE FIX
+            "-static-libgcc"
+        ],
         define_macros=[("NDEBUG", None)],
     ),
 ]
@@ -23,9 +31,6 @@ ext_modules = [
 setup(
     name="si_engine",
     version="2.0.0",
-    author="SI Engine Team",
-    description="Synthetic Intelligence Engine",
     ext_modules=ext_modules,
     cmdclass={"build_ext": build_ext},
-    python_requires=">=3.8",
 )
