@@ -16,10 +16,18 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: si-engine-linux
+        path: ./artifact
+    
+    - name: List files
+      run: |
+        cd artifact
+        ls -la hf_model/
+        # Move files out of hf_model subfolder for flat deploy
+        cp hf_model/* .
     
     - name: Deploy to HuggingFace Space
       uses: huggingface/hub@main
       with:
         token: ${{ secrets.HF_TOKEN }}
         repo: your-username/si-engine
-        path: .
+        path: ./artifact
