@@ -29,6 +29,7 @@ jobs:
     
     - name: Build SI Engine module
       run: |
+        cd hf_model
         python setup.py build_ext --inplace
         ls -la si_engine*.so
     
@@ -37,7 +38,7 @@ jobs:
       with:
         name: si-engine-linux
         path: |
-          si_engine*.so
-          app.py
-          requirements.txt
-          README.md
+          hf_model/si_engine*.so
+          hf_model/app.py
+          hf_model/requirements.txt
+          hf_model/README.md
